@@ -3,7 +3,7 @@ import { auth } from '@/lib/firebase'
 import { useAuthStore } from '@/store/authStore'
 import { Button } from '@/components/ui/button'
 import KanbanBoard from '@/components/KanbanBoard'
-
+import AddTaskDialog from '@/components/AddTaskDialog'
 
 export default function DashboardPage() {
   const user = useAuthStore((state) => state.user)
@@ -24,7 +24,10 @@ export default function DashboardPage() {
         </div>
       </header>
       <main className="p-6">
-        <h2 className="text-2xl font-bold mb-6">My Board</h2>
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-2xl font-bold">My Board</h2>
+          <AddTaskDialog />
+        </div>
         <KanbanBoard />
       </main>
     </div>
