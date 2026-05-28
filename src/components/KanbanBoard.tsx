@@ -1,5 +1,8 @@
+import { DndContext, type DragEndEvent } from '@dnd-kit/core'
 import type { Status } from '@/types'
 import { useTaskStore } from '@/store/taskStore'
+import { doc, updateDoc } from 'firebase/firestore'
+import { db } from '@/lib/firebase'
 import KanbanColumn from './KanbanColumn'
 
 const columns: { id: Status; title: string }[] = [
@@ -10,16 +13,35 @@ const columns: { id: Status; title: string }[] = [
 
 export default function KanbanBoard() {
   const tasks = useTaskStore((state) => state.tasks)
+  const moveTask = useTaskStore((state) => state.moveTask)
+
+  async function handleDragEnd(event: DragEndEvent) {
+    const { active, over } = event
+    if (!over) return
+
+    const taskId = active.id as string
+    const newStatus = over.id as Status
+
+    moveTask(taskId, newStatus)
+
+    await updateDoc(doc(db, 'tasks', taskId), {
+      status: newStatus,
+      updatedAt: new Date().toISOString(),
+    })
+  }
 
   return (
-    <div className="flex gap-4 overflow-x-auto pb-4">
-      {columns.map((col) => (
-        <KanbanColumn
-          key={col.id}
-          title={col.title}
-          tasks={tasks.filter((t) => t.status === col.id)}
-        />
-      ))}
-    </div>
+    <DndContext onDragEnd={handleDragEnd}>
+      <div className="flex gap-4 overflow-x-auto pb-4">
+        {columns.map((col) => (
+          <KanbanColumn
+            key={col.id}
+            id={col.id}
+            title={col.title}
+            tasks={tasks.filter((t) => t.status === col.id)}
+          />
+        ))}
+      </div>
+    </DndContext>
   )
 }
