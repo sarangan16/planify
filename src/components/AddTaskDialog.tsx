@@ -1,6 +1,8 @@
 import { useState } from 'react'
-import { useTaskStore } from '@/store/taskStore'
-import type { Priority, Status } from '@/types'
+import { collection, addDoc } from 'firebase/firestore'
+import { db } from '@/lib/firebase'
+import { useAuthStore } from '@/store/authStore'
+import type { Priority } from '@/types'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -13,31 +15,34 @@ import {
 } from '@/components/ui/dialog'
 
 export default function AddTaskDialog() {
-  const addTask = useTaskStore((state) => state.addTask)
+  const user = useAuthStore((state) => state.user)
   const [open, setOpen] = useState(false)
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
   const [priority, setPriority] = useState<Priority>('medium')
 
-  function handleAdd() {
-    if (!title.trim()) return
+  async function handleAdd() {
+  if (!title.trim() || !user) return
 
-    addTask({
-      id: crypto.randomUUID(),
+  try {
+    await addDoc(collection(db, 'tasks'), {
       title,
       description,
       priority,
-      status: 'todo' as Status,
+      status: 'todo',
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
-      userId: '',
+      userId: user.uid,
     })
 
     setTitle('')
     setDescription('')
     setPriority('medium')
     setOpen(false)
+  } catch (error) {
+    console.error(error)
   }
+}
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>

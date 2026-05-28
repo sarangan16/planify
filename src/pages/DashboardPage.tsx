@@ -4,9 +4,11 @@ import { useAuthStore } from '@/store/authStore'
 import { Button } from '@/components/ui/button'
 import KanbanBoard from '@/components/KanbanBoard'
 import AddTaskDialog from '@/components/AddTaskDialog'
+import { useTasks } from '@/hooks/useTasks'
 
 export default function DashboardPage() {
   const user = useAuthStore((state) => state.user)
+  useTasks()
 
   async function handleLogout() {
     await signOut(auth)

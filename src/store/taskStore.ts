@@ -3,6 +3,7 @@ import type { Task, Status } from '../types'
 
 interface TaskStore {
   tasks: Task[]
+  setTasks: (tasks: Task[]) => void
   addTask: (task: Task) => void
   updateTask: (task: Task) => void
   deleteTask: (id: string) => void
@@ -11,6 +12,8 @@ interface TaskStore {
 
 export const useTaskStore = create<TaskStore>((set) => ({
   tasks: [],
+
+  setTasks: (tasks) => set({ tasks }),
 
   addTask: (task) =>
     set((state) => ({ tasks: [...state.tasks, task] })),
