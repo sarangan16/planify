@@ -1,21 +1,21 @@
 import { useState } from 'react'
-import { signInWithEmailAndPassword } from 'firebase/auth'
+import { createUserWithEmailAndPassword } from 'firebase/auth'
 import { auth } from '@/lib/firebase'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 
-export default function LoginPage() {
+export default function SignupPage() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
 
-  async function handleLogin() {
+  async function handleSignup() {
     try {
-      await signInWithEmailAndPassword(auth, email, password)
+      await createUserWithEmailAndPassword(auth, email, password)
     } catch {
-      setError('Invalid email or password')
+      setError('Could not create account. Try again.')
     }
   }
 
@@ -23,7 +23,7 @@ export default function LoginPage() {
     <div className="min-h-screen flex items-center justify-center bg-background">
       <Card className="w-full max-w-sm">
         <CardHeader>
-          <CardTitle className="text-2xl">Planify</CardTitle>
+          <CardTitle className="text-2xl">Create Account</CardTitle>
         </CardHeader>
         <CardContent className="flex flex-col gap-4">
           <div className="flex flex-col gap-1">
@@ -43,13 +43,12 @@ export default function LoginPage() {
             />
           </div>
           {error && <p className="text-sm text-red-500">{error}</p>}
-          <Button onClick={handleLogin}>Login</Button>
+          <Button onClick={handleSignup}>Sign Up</Button>
           <p className="text-sm text-center">
-            No account?{' '}
-            <a href="/signup" className="underline">Sign up</a>
+            Already have an account?{' '}
+            <a href="/login" className="underline">Login</a>
           </p>
         </CardContent>
-        
       </Card>
     </div>
   )
