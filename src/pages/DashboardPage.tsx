@@ -2,6 +2,8 @@ import { signOut } from 'firebase/auth'
 import { auth } from '@/lib/firebase'
 import { useAuthStore } from '@/store/authStore'
 import { Button } from '@/components/ui/button'
+import KanbanBoard from '@/components/KanbanBoard'
+
 
 export default function DashboardPage() {
   const user = useAuthStore((state) => state.user)
@@ -23,7 +25,7 @@ export default function DashboardPage() {
       </header>
       <main className="p-6">
         <h2 className="text-2xl font-bold mb-6">My Board</h2>
-        <p className="text-muted-foreground">Kanban board coming here...</p>
+        <KanbanBoard />
       </main>
     </div>
   )
