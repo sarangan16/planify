@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { useDroppable, useDraggable } from '@dnd-kit/core'
 import { deleteDoc, doc } from 'firebase/firestore'
 import { db } from '@/lib/firebase'
@@ -5,6 +6,7 @@ import { useTaskStore } from '@/store/taskStore'
 import type { Task, Status } from '@/types'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent } from '@/components/ui/card'
+import EditTaskDialog from './EditTaskDialog'
 
 interface CardProps {
   task: Task
@@ -12,6 +14,7 @@ interface CardProps {
 
 function TaskCard({ task }: CardProps) {
   const deleteTask = useTaskStore((state) => state.deleteTask)
+  const [editOpen, setEditOpen] = useState(false)
   const { attributes, listeners, setNodeRef, transform } = useDraggable({
     id: task.id,
   })
@@ -32,26 +35,37 @@ function TaskCard({ task }: CardProps) {
   }
 
   return (
-    <Card className="cursor-default">
-      <CardContent className="p-3 flex flex-col gap-2">
-        <div
-          ref={setNodeRef}
-          style={style}
-          {...listeners}
-          {...attributes}
-          className="cursor-grab"
-        >
-          <p className="text-sm font-medium">{task.title}</p>
-        </div>
-        <Badge variant={priorityColor[task.priority]}>{task.priority}</Badge>
-        <button
-          onClick={handleDelete}
-          className="text-xs text-muted-foreground hover:text-red-500 self-end"
-        >
-          Delete
-        </button>
-      </CardContent>
-    </Card>
+    <>
+      <Card className="cursor-default">
+        <CardContent className="p-3 flex flex-col gap-2">
+          <div
+            ref={setNodeRef}
+            style={style}
+            {...listeners}
+            {...attributes}
+            className="cursor-grab"
+          >
+            <p className="text-sm font-medium">{task.title}</p>
+          </div>
+          <Badge variant={priorityColor[task.priority]}>{task.priority}</Badge>
+          <div className="flex justify-end gap-2">
+            <button
+              onClick={() => setEditOpen(true)}
+              className="text-xs text-muted-foreground hover:text-blue-500"
+            >
+              Edit
+            </button>
+            <button
+              onClick={handleDelete}
+              className="text-xs text-muted-foreground hover:text-red-500"
+            >
+              Delete
+            </button>
+          </div>
+        </CardContent>
+      </Card>
+      <EditTaskDialog task={task} open={editOpen} onClose={() => setEditOpen(false)} />
+    </>
   )
 }
 
