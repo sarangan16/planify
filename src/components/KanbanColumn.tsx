@@ -1,5 +1,7 @@
-import { useDroppable } from '@dnd-kit/core'
-import { useDraggable } from '@dnd-kit/core'
+import { useDroppable, useDraggable } from '@dnd-kit/core'
+import { deleteDoc, doc } from 'firebase/firestore'
+import { db } from '@/lib/firebase'
+import { useTaskStore } from '@/store/taskStore'
 import type { Task, Status } from '@/types'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent } from '@/components/ui/card'
@@ -9,6 +11,7 @@ interface CardProps {
 }
 
 function TaskCard({ task }: CardProps) {
+  const deleteTask = useTaskStore((state) => state.deleteTask)
   const { attributes, listeners, setNodeRef, transform } = useDraggable({
     id: task.id,
   })
@@ -23,11 +26,30 @@ function TaskCard({ task }: CardProps) {
     high: 'destructive',
   } as const
 
+  async function handleDelete() {
+    deleteTask(task.id)
+    await deleteDoc(doc(db, 'tasks', task.id))
+  }
+
   return (
-    <Card ref={setNodeRef} style={style} {...listeners} {...attributes} className="cursor-grab">
+    <Card className="cursor-default">
       <CardContent className="p-3 flex flex-col gap-2">
-        <p className="text-sm font-medium">{task.title}</p>
+        <div
+          ref={setNodeRef}
+          style={style}
+          {...listeners}
+          {...attributes}
+          className="cursor-grab"
+        >
+          <p className="text-sm font-medium">{task.title}</p>
+        </div>
         <Badge variant={priorityColor[task.priority]}>{task.priority}</Badge>
+        <button
+          onClick={handleDelete}
+          className="text-xs text-muted-foreground hover:text-red-500 self-end"
+        >
+          Delete
+        </button>
       </CardContent>
     </Card>
   )
