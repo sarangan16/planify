@@ -1,5 +1,7 @@
+import LoginPage from "./pages/LoginPage"
+
 function App() {
-  return <div>Management Dashboard</div>
+  return <LoginPage />
 }
 
 export default App
