@@ -7,10 +7,13 @@ import KanbanBoard from '@/components/KanbanBoard'
 import AddTaskDialog from '@/components/AddTaskDialog'
 import { useTasks } from '@/hooks/useTasks'
 import ThemeToggle from '@/components/ThemeToggle'
+import { useTaskStore } from '@/store/taskStore'
+
 
 export default function DashboardPage() {
   const user = useAuthStore((state) => state.user)
   useTasks()
+  const tasks = useTaskStore((state) => state.tasks)
   const [filter, setFilter] = useState<'all' | 'low' | 'medium' | 'high'>('all')
 
   async function handleLogout() {
@@ -43,6 +46,19 @@ export default function DashboardPage() {
             >
               {p}
             </button>
+          ))}
+        </div>
+        <div className="grid grid-cols-4 gap-4 mb-6">
+          {[
+            { label: 'Total', count: tasks.length },
+            { label: 'To Do', count: tasks.filter((t) => t.status === 'todo').length },
+            { label: 'In Progress', count: tasks.filter((t) => t.status === 'in-progress').length },
+            { label: 'Done', count: tasks.filter((t) => t.status === 'done').length },
+          ].map((stat) => (
+            <div key={stat.label} className="border rounded-lg p-4">
+              <p className="text-sm text-muted-foreground">{stat.label}</p>
+              <p className="text-2xl font-bold">{stat.count}</p>
+            </div>
           ))}
         </div>
         <KanbanBoard filter={filter} />
