@@ -5,15 +5,21 @@ import { doc, updateDoc } from 'firebase/firestore'
 import { db } from '@/lib/firebase'
 import KanbanColumn from './KanbanColumn'
 
+interface Props {
+  filter: 'all' | 'low' | 'medium' | 'high'
+}
+
 const columns: { id: Status; title: string }[] = [
   { id: 'todo', title: 'To Do' },
   { id: 'in-progress', title: 'In Progress' },
   { id: 'done', title: 'Done' },
 ]
 
-export default function KanbanBoard() {
+export default function KanbanBoard({ filter }: Props) {
   const tasks = useTaskStore((state) => state.tasks)
   const moveTask = useTaskStore((state) => state.moveTask)
+
+  const filteredTasks = filter === 'all' ? tasks : tasks.filter((t) => t.priority === filter)
 
   async function handleDragEnd(event: DragEndEvent) {
     const { active, over } = event
@@ -38,7 +44,7 @@ export default function KanbanBoard() {
             key={col.id}
             id={col.id}
             title={col.title}
-            tasks={tasks.filter((t) => t.status === col.id)}
+            tasks={filteredTasks.filter((t) => t.status === col.id)}
           />
         ))}
       </div>

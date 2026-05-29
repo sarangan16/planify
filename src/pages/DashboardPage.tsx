@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { signOut } from 'firebase/auth'
 import { auth } from '@/lib/firebase'
 import { useAuthStore } from '@/store/authStore'
@@ -10,6 +11,7 @@ import ThemeToggle from '@/components/ThemeToggle'
 export default function DashboardPage() {
   const user = useAuthStore((state) => state.user)
   useTasks()
+  const [filter, setFilter] = useState<'all' | 'low' | 'medium' | 'high'>('all')
 
   async function handleLogout() {
     await signOut(auth)
@@ -28,11 +30,22 @@ export default function DashboardPage() {
         </div>
       </header>
       <main className="p-6">
-        <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center justify-between mb-4">
           <h2 className="text-2xl font-bold">My Board</h2>
           <AddTaskDialog />
         </div>
-        <KanbanBoard />
+        <div className="flex gap-2 mb-6">
+          {(['all', 'low', 'medium', 'high'] as const).map((p) => (
+            <button
+              key={p}
+              onClick={() => setFilter(p)}
+              className={`text-sm px-3 py-1 rounded-full border ${filter === p ? 'bg-foreground text-background' : 'text-muted-foreground'}`}
+            >
+              {p}
+            </button>
+          ))}
+        </div>
+        <KanbanBoard filter={filter} />
       </main>
     </div>
   )
