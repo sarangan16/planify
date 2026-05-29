@@ -128,3 +128,5 @@
     @apply font-sans;
     }
 }
+
+@variant dark (&:is(.dark *));

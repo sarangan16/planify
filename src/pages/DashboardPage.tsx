@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button'
 import KanbanBoard from '@/components/KanbanBoard'
 import AddTaskDialog from '@/components/AddTaskDialog'
 import { useTasks } from '@/hooks/useTasks'
+import ThemeToggle from '@/components/ThemeToggle'
 
 export default function DashboardPage() {
   const user = useAuthStore((state) => state.user)
@@ -20,6 +21,7 @@ export default function DashboardPage() {
         <h1 className="text-xl font-semibold">Planify</h1>
         <div className="flex items-center gap-4">
           <span className="text-sm text-muted-foreground">{user?.email}</span>
+          <ThemeToggle />
           <Button variant="outline" size="sm" onClick={handleLogout}>
             Logout
           </Button>
