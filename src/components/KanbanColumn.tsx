@@ -88,6 +88,9 @@ export default function KanbanColumn({ id, title, tasks }: ColumnProps) {
         <h3 className="font-semibold">{title}</h3>
         <span className="text-sm text-muted-foreground">{tasks.length}</span>
       </div>
+      {tasks.length === 0 && (
+        <p className="text-sm text-muted-foreground text-center py-6">No tasks yet</p>
+      )}
       {tasks.map((task) => (
         <TaskCard key={task.id} task={task} />
       ))}
