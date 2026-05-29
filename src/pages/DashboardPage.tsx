@@ -2,17 +2,15 @@ import { useState } from 'react'
 import { signOut } from 'firebase/auth'
 import { auth } from '@/lib/firebase'
 import { useAuthStore } from '@/store/authStore'
+import { useTaskStore } from '@/store/taskStore'
 import { Button } from '@/components/ui/button'
 import KanbanBoard from '@/components/KanbanBoard'
 import AddTaskDialog from '@/components/AddTaskDialog'
-import { useTasks } from '@/hooks/useTasks'
 import ThemeToggle from '@/components/ThemeToggle'
-import { useTaskStore } from '@/store/taskStore'
-
+import { Link } from 'react-router-dom'
 
 export default function DashboardPage() {
   const user = useAuthStore((state) => state.user)
-  useTasks()
   const tasks = useTaskStore((state) => state.tasks)
   const [filter, setFilter] = useState<'all' | 'low' | 'medium' | 'high'>('all')
 
@@ -23,7 +21,11 @@ export default function DashboardPage() {
   return (
     <div className="min-h-screen bg-background">
       <header className="border-b px-6 py-4 flex items-center justify-between">
-        <h1 className="text-xl font-semibold">Planify</h1>
+        <div className="flex items-center gap-6">
+          <h1 className="text-xl font-semibold">Planify</h1>
+          <Link to="/dashboard" className="text-sm text-muted-foreground hover:text-foreground">Board</Link>
+          <Link to="/analytics" className="text-sm text-muted-foreground hover:text-foreground">Analytics</Link>
+        </div>
         <div className="flex items-center gap-4">
           <span className="text-sm text-muted-foreground">{user?.email}</span>
           <ThemeToggle />
