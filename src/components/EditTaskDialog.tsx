@@ -14,7 +14,6 @@ import {
 } from '@/components/ui/dialog'
 import { toast } from 'sonner'
 
-
 interface Props {
   task: Task
   open: boolean
@@ -26,6 +25,7 @@ export default function EditTaskDialog({ task, open, onClose }: Props) {
   const [title, setTitle] = useState(task.title)
   const [description, setDescription] = useState(task.description)
   const [priority, setPriority] = useState<Priority>(task.priority)
+  const [dueDate, setDueDate] = useState(task.dueDate ?? '')
 
   async function handleSave() {
     if (!title.trim()) return
@@ -35,6 +35,7 @@ export default function EditTaskDialog({ task, open, onClose }: Props) {
       title,
       description,
       priority,
+      dueDate: dueDate || null,
       updatedAt: new Date().toISOString(),
     }
 
@@ -43,6 +44,7 @@ export default function EditTaskDialog({ task, open, onClose }: Props) {
       title,
       description,
       priority,
+      dueDate: dueDate || null,
       updatedAt: updated.updatedAt,
     })
 
@@ -76,6 +78,14 @@ export default function EditTaskDialog({ task, open, onClose }: Props) {
               <option value="medium">Medium</option>
               <option value="high">High</option>
             </select>
+          </div>
+          <div className="flex flex-col gap-1">
+            <Label>Due Date</Label>
+            <Input
+              type="date"
+              value={dueDate}
+              onChange={(e) => setDueDate(e.target.value)}
+            />
           </div>
           <Button onClick={handleSave}>Save</Button>
         </div>

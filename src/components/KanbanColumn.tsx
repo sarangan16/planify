@@ -9,7 +9,6 @@ import { Card, CardContent } from '@/components/ui/card'
 import EditTaskDialog from './EditTaskDialog'
 import { toast } from 'sonner'
 
-
 interface CardProps {
   task: Task
 }
@@ -35,7 +34,6 @@ function TaskCard({ task }: CardProps) {
     deleteTask(task.id)
     await deleteDoc(doc(db, 'tasks', task.id))
     toast.success('Task deleted')
-
   }
 
   return (
@@ -52,6 +50,9 @@ function TaskCard({ task }: CardProps) {
             <p className="text-sm font-medium">{task.title}</p>
           </div>
           <Badge variant={priorityColor[task.priority]}>{task.priority}</Badge>
+          {task.dueDate && (
+            <p className="text-xs text-muted-foreground">Due: {task.dueDate}</p>
+          )}
           <div className="flex justify-end gap-2">
             <button
               onClick={() => setEditOpen(true)}
@@ -89,11 +90,11 @@ export default function KanbanColumn({ id, title, tasks }: ColumnProps) {
         <span className="text-sm text-muted-foreground">{tasks.length}</span>
       </div>
       {tasks.length === 0 && (
-      <p className="text-sm text-muted-foreground text-center py-6">No tasks yet</p>
-    )}
-    {tasks.map((task) => (
-      <TaskCard key={task.id} task={task} />
-    ))}
+        <p className="text-sm text-muted-foreground text-center py-6">No tasks yet</p>
+      )}
+      {tasks.map((task) => (
+        <TaskCard key={task.id} task={task} />
+      ))}
     </div>
   )
 }
