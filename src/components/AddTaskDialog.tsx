@@ -15,38 +15,39 @@ import {
 } from '@/components/ui/dialog'
 import { toast } from 'sonner'
 
-
 export default function AddTaskDialog() {
   const user = useAuthStore((state) => state.user)
   const [open, setOpen] = useState(false)
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
   const [priority, setPriority] = useState<Priority>('medium')
+  const [dueDate, setDueDate] = useState('')
 
   async function handleAdd() {
-  if (!title.trim() || !user) return
+    if (!title.trim() || !user) return
 
-  try {
-    await addDoc(collection(db, 'tasks'), {
-      title,
-      description,
-      priority,
-      status: 'todo',
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-      userId: user.uid,
-    })
+    try {
+      await addDoc(collection(db, 'tasks'), {
+        title,
+        description,
+        priority,
+        status: 'todo',
+        dueDate: dueDate || null,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        userId: user.uid,
+      })
 
-    setTitle('')
-    setDescription('')
-    setPriority('medium')
-    setOpen(false)
-    toast.success('Task created')
-
-  } catch (error) {
-    console.error(error)
+      setTitle('')
+      setDescription('')
+      setPriority('medium')
+      setDueDate('')
+      setOpen(false)
+      toast.success('Task created')
+    } catch (error) {
+      console.error(error)
+    }
   }
-}
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -77,6 +78,14 @@ export default function AddTaskDialog() {
               <option value="medium">Medium</option>
               <option value="high">High</option>
             </select>
+          </div>
+          <div className="flex flex-col gap-1">
+            <Label>Due Date</Label>
+            <Input
+              type="date"
+              value={dueDate}
+              onChange={(e) => setDueDate(e.target.value)}
+            />
           </div>
           <Button onClick={handleAdd}>Create Task</Button>
         </div>

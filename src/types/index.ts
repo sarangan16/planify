@@ -14,6 +14,7 @@ export interface Task {
   description: string
   priority: Priority
   status: Status
+  dueDate: string | null
   createdAt: string
   updatedAt: string
   userId: string
