@@ -13,6 +13,8 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog'
+import { toast } from 'sonner'
+
 
 export default function AddTaskDialog() {
   const user = useAuthStore((state) => state.user)
@@ -39,6 +41,8 @@ export default function AddTaskDialog() {
     setDescription('')
     setPriority('medium')
     setOpen(false)
+    toast.success('Task created')
+
   } catch (error) {
     console.error(error)
   }

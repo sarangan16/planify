@@ -12,6 +12,8 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog'
+import { toast } from 'sonner'
+
 
 interface Props {
   task: Task
@@ -45,6 +47,7 @@ export default function EditTaskDialog({ task, open, onClose }: Props) {
     })
 
     onClose()
+    toast.success('Task updated')
   }
 
   return (

@@ -7,6 +7,8 @@ import type { Task, Status } from '@/types'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent } from '@/components/ui/card'
 import EditTaskDialog from './EditTaskDialog'
+import { toast } from 'sonner'
+
 
 interface CardProps {
   task: Task
@@ -32,6 +34,8 @@ function TaskCard({ task }: CardProps) {
   async function handleDelete() {
     deleteTask(task.id)
     await deleteDoc(doc(db, 'tasks', task.id))
+    toast.success('Task deleted')
+
   }
 
   return (
